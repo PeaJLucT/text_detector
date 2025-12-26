@@ -1,4 +1,5 @@
 from PIL import Image, ImageDraw, ImageOps
+import PIL
 import os
 from ultralytics import YOLO
 import numpy as np
@@ -19,8 +20,7 @@ def sort_boxes(boxes):
     
     return sorted_boxes
 
-
-def detect(model_path: str, image_path: str, draw_graphs = False, conf = 0.5, output_folder = 'output') -> list:
+def detect(model_path: str, image_path: str, draw_graphs = False, conf = 0.5, output_folder = '') -> tuple[list[PIL.Image.Image], PIL.Image.Image]:
     '''
     Возвращает список обнаруженных и вырезанных слов с изображения
 
@@ -31,7 +31,7 @@ def detect(model_path: str, image_path: str, draw_graphs = False, conf = 0.5, ou
         conf (float): Уверенность модели для записи маски как правильной
         output_folder (str): Путь до папки, в которую будут сохранены все вырезанные найденные слова с изображения
     Returns:
-        list: [Список найденных изображений, оригинальное изображение с маской детекции]
+        list: [ [Список найденных изображений] , оригинальное изображение с маской детекции]
     '''
     
     try:
@@ -39,7 +39,7 @@ def detect(model_path: str, image_path: str, draw_graphs = False, conf = 0.5, ou
         print(f"Лучшая модель успешно загружена из {model_path}")
     except Exception as e:
         print(f"Ошибка при загрузке модели: {e}")
-        return []
+        return [], None
 
     try:
         orig_img = Image.open(image_path).convert('RGB')
@@ -47,7 +47,7 @@ def detect(model_path: str, image_path: str, draw_graphs = False, conf = 0.5, ou
         print(f'Изображение успешно загружено из {image_path}')
     except Exception as e:
         print(f"Ошибка при открытии изображения: {e}")
-        return []
+        return [], None
     
     # Детектим слова
     results = model(orig_img, conf=conf)
@@ -61,8 +61,9 @@ def detect(model_path: str, image_path: str, draw_graphs = False, conf = 0.5, ou
     # список найденных слов 
     finded_images = list()
 
-    #папка для сохранения изображений слов
-    os.makedirs(output_folder, exist_ok=True)
+    if output_folder:
+        #папка для сохранения изображений слов
+        os.makedirs(output_folder, exist_ok=True)
 
     for i, box in enumerate(sorted_boxes):
         x1, y1, x2, y2 = [int(coord) for coord in box.xyxy[0]]
@@ -97,7 +98,7 @@ def detect(model_path: str, image_path: str, draw_graphs = False, conf = 0.5, ou
         plt.tight_layout()
         plt.show()
     
-    return [finded_images, image_with_boxes]
+    return finded_images, image_with_boxes
 
 
 if __name__ == '__main__':
