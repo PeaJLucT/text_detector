@@ -104,11 +104,12 @@ if __name__ == '__main__':
     # путь до модели
     best_model_path = 'weights/best.pt'
     
-    # путь до изображения, которое нужно сегментировать на слова
-    # image_path = 'INFO/examples/6.jpg'
-    images = 'INFO/examples'
-    images_output = 'detect outputs/75 + 75/'
+    # путь до изображений, которые нужно сегментировать на слова
+    images = 'examples'
+    images_output = 'detect outputs/test'
     for image in os.listdir(images):
         image_path = os.path.join(images, image)
         image_w_boxes = detect(best_model_path, image_path, draw_graphs=False)[1]
+
+        os.makedirs(images_output, exist_ok=True)
         image_w_boxes.save(os.path.join(images_output, f'{image}'), 'png')
