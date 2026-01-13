@@ -1,8 +1,10 @@
-from PIL import Image, ImageDraw, ImageOps
+from PIL import Image, ImageDraw, ImageOps, ImageFont, ImageEnhance
 import PIL
 import os
 from ultralytics import YOLO
 import numpy as np
+import cv2
+
 
 def sort_boxes(boxes):
     """
@@ -11,16 +13,34 @@ def sort_boxes(boxes):
     if not boxes:
         return []
     # определяем среднюю высоту рамок, чтобы задать допуск для одной строки
-    avg_height = np.mean([b.xyxy[0][3] - b.xyxy[0][1] for b in boxes])
+    boxes_data = boxes.data.cpu().numpy() 
+    heights = boxes_data[:, 3] - boxes_data[:, 1]
+    avg_height = np.mean(heights)
     # print(f'Средний допуск строки - {avg_height}')
     
     # Сортируем рамки по строкам
-    # b.xyxy[0][1] // (avg_height * 0.7) - это строка
-    sorted_boxes = sorted(boxes, key=lambda b: (b.xyxy[0][1] // (avg_height * 0.7), b.xyxy[0][0]))
+    sorted_boxes = sorted(boxes, key=lambda b: (b.xyxy[0][1].item() // (avg_height * 0.7), b.xyxy[0][0].item()))
     
     return sorted_boxes
 
-def detect(model_path: str, image_path: str, draw_graphs = False, conf = 0.5, output_folder = '') -> tuple[list[PIL.Image.Image], PIL.Image.Image]:
+def pre_process_image_for_model(pil_image):
+    '''
+    Использует умное улучшение контраста (CLAHE), чтобы вытащить карандаш,
+    не ломая при этом ручку.
+    '''
+    img_np = np.array(pil_image.convert('RGB'))
+    gray = cv2.cvtColor(img_np, cv2.COLOR_RGB2GRAY)
+    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+    enhanced_gray = clahe.apply(gray)
+
+    # gamma = 0.8
+    # enhanced_gray = np.array(255 * (enhanced_gray / 255) ** (1 / gamma), dtype='uint8')
+
+    enhanced_rgb = cv2.cvtColor(enhanced_gray, cv2.COLOR_GRAY2RGB)
+    return Image.fromarray(enhanced_rgb)
+
+
+def detect(model_path: str, image_path: str, draw_graphs = False, conf = 0.3, output_folder = '') -> tuple[list[PIL.Image.Image], PIL.Image.Image]:
     '''
     Возвращает список обнаруженных и вырезанных слов с изображения
 
@@ -50,7 +70,10 @@ def detect(model_path: str, image_path: str, draw_graphs = False, conf = 0.5, ou
         return [], None
     
     # Детектим слова
-    results = model(orig_img, conf=conf)
+    img_gray_for_model = ImageOps.grayscale(orig_img).convert('RGB')
+    
+    # img_gray_for_model = pre_process_image_for_model(orig_img)
+    results = model.predict(img_gray_for_model, imgsz=1280, conf=conf, verbose=False)
     result = results[0]
 
     sorted_boxes = sort_boxes(result.boxes)
@@ -58,26 +81,40 @@ def detect(model_path: str, image_path: str, draw_graphs = False, conf = 0.5, ou
     image_with_boxes = orig_img.copy()
     draw = ImageDraw.Draw(image_with_boxes)
 
+    try:    
+        font = ImageFont.truetype("arial.ttf", 40)
+    except IOError:
+        font = ImageFont.load_default()
+
     # список найденных слов 
     finded_images = list()
 
+    image_name = os.path.splitext(os.path.basename(image_path))[0]
+    
+
     if output_folder:
+        current_img_output = os.path.join(output_folder, image_name)
         #папка для сохранения изображений слов
-        os.makedirs(output_folder, exist_ok=True)
+        os.makedirs(current_img_output, exist_ok=True)
 
     for i, box in enumerate(sorted_boxes):
-        x1, y1, x2, y2 = [int(coord) for coord in box.xyxy[0]]
+        c = box.xyxy[0].cpu().numpy().astype(int) # x1, y1, x2, y2
+        x1, y1, x2, y2 = c[0], c[1], c[2], c[3]
+
         confid = float(box.conf[0])
         
         # Вырезаем слово
         crop_image = orig_img.crop((x1, y1, x2, y2))
-        crop_image.save(os.path.join(output_folder, f'{i}.jpg'), quality = 100)
+        if output_folder:
+            crop_image.save(os.path.join(current_img_output, f'{i}.jpg'), quality = 100)
         finded_images.append(crop_image)
 
-        draw.rectangle([x1, y1, x2, y2], outline="red", width=3)
+        draw.rectangle([x1, y1, x2, y2], outline="red", width=5)
 
         label = f"{confid:.2f}"
-        draw.text((x1, y1 - 15), label, fill="red")
+        text_bbox = draw.textbbox((x1, y1), label, font=font)
+        draw.rectangle((x1, y1 - (text_bbox[3]-text_bbox[1]), x1 + (text_bbox[2]-text_bbox[0]), y1), fill="red")
+        draw.text((x1, y1 - (text_bbox[3]-text_bbox[1])), label, fill="white", font=font)
 
 
     print(f"Найдено {len(result.boxes)} объектов с уверенностью > {conf}.")
@@ -103,14 +140,18 @@ def detect(model_path: str, image_path: str, draw_graphs = False, conf = 0.5, ou
 
 if __name__ == '__main__':
     # путь до модели
-    best_model_path = 'weights/best.pt'
+    best_model_path = 'weights/last.pt'
     
     # путь до изображений, которые нужно сегментировать на слова
-    images = 'examples'
-    images_output = 'detect outputs/test'
-    for image in os.listdir(images):
-        image_path = os.path.join(images, image)
-        image_w_boxes = detect(best_model_path, image_path, draw_graphs=False)[1]
+    example_images = 'examples'
+    # Путь до папки куда будут сохраняться изображения с рамками
+    images_output = 'detect outputs/run10_1280px_augmented4'
+    # Папка в которые будут сохраняться изображения слов
+    words_output_dir = ''
+
+    for image in os.listdir(example_images):
+        image_path = os.path.join(example_images, image)
+        image_w_boxes = detect(best_model_path, image_path, draw_graphs=False,output_folder=words_output_dir)[1]
 
         os.makedirs(images_output, exist_ok=True)
         image_w_boxes.save(os.path.join(images_output, f'{image}'), 'png')
