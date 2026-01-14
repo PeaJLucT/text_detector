@@ -9,7 +9,7 @@ from transformers import TrOCRProcessor, VisionEncoderDecoderModel
 import re
 
 # НАСТРОЙКИ МОДЕЛЕЙ 
-YOLO_MODEL_PATH = 'text_detector/weights/last.pt'  # Путь к YOLO
+YOLO_MODEL_PATH = 'weights/best.pt'  # Путь к YOLO
 TROCR_MODEL_NAME = "cyrillic-trocr/trocr-handwritten-cyrillic" # Путь к TrOCR 
 # TROCR_MODEL_NAME = "kaz-v/trocr-handwritten-russian"         
 DEVICE = "cuda:0" if torch.cuda.is_available() else "cpu"
@@ -28,13 +28,25 @@ def load_models():
     print(f"Загрузка моделей на {DEVICE}")
     
     # YOLO
-    yolo_model = YOLO(YOLO_MODEL_PATH, task='detect')
+    try:
+        yolo_model = YOLO(YOLO_MODEL_PATH, task='detect')
+        print(f"✅ YOLO модель загружена из {YOLO_MODEL_PATH}")
+    except Exception as e:
+        print(f"❌ Ошибка загрузки YOLO модели: {e}")
+        raise
     
     # TrOCR
-    processor = TrOCRProcessor.from_pretrained(TROCR_MODEL_NAME)
-    trocr_model = VisionEncoderDecoderModel.from_pretrained(TROCR_MODEL_NAME)
-    trocr_model.to(DEVICE)
-    trocr_model.eval()
+    try:
+        print("Загрузка TrOCR модели с HuggingFace (может занять время при первом запуске)...")
+        processor = TrOCRProcessor.from_pretrained(TROCR_MODEL_NAME)
+        trocr_model = VisionEncoderDecoderModel.from_pretrained(TROCR_MODEL_NAME)
+        trocr_model.to(DEVICE)
+        trocr_model.eval()
+        print("✅ TrOCR модель загружена")
+    except Exception as e:
+        print(f"❌ Ошибка загрузки TrOCR модели: {e}")
+        print("Проверьте интернет-соединение. Модель загружается с HuggingFace.")
+        raise
     
     print("Модели успешно загружены")
     return yolo_model, processor, trocr_model
@@ -112,6 +124,10 @@ def detect_and_read(yolo_model, processor, trocr_model, image_path, conf=0.5, ou
     sorted_boxes = sort_boxes(result.boxes)
     print(f"Найдено слов: {len(sorted_boxes)}")
 
+    if len(sorted_boxes) == 0:
+        print("⚠️ YOLO не нашел слов на изображении. Попробуйте уменьшить параметр уверенности.")
+        return [], orig_img, ""
+
     image_with_boxes = orig_img.copy()
     draw = ImageDraw.Draw(image_with_boxes)
     
@@ -129,6 +145,7 @@ def detect_and_read(yolo_model, processor, trocr_model, image_path, conf=0.5, ou
         os.makedirs(current_img_output, exist_ok=True)
 
     # РАСПОЗНАВАНИЕ TrOCR
+    print(f"Начинаю распознавание {len(sorted_boxes)} слов...")
     for i, box in enumerate(sorted_boxes):
         # Координаты
         c = box.xyxy[0].cpu().numpy().astype(int)
@@ -165,6 +182,9 @@ def detect_and_read(yolo_model, processor, trocr_model, image_path, conf=0.5, ou
         word_text = processor.batch_decode(generated_ids, skip_special_tokens=True)[0]
         word_text = re.sub(r'[^а-яА-ЯёЁ0-9\.,\-\!\? ]', '', word_text)  # №№№№№№№№№№
         full_text_list.append(word_text)
+        
+        if (i + 1) % 10 == 0:
+            print(f"  Обработано {i + 1}/{len(sorted_boxes)} слов...")
 
 
         draw.rectangle([x1, y1, x2, y2], outline="red", width=4)
@@ -176,7 +196,14 @@ def detect_and_read(yolo_model, processor, trocr_model, image_path, conf=0.5, ou
         text_bbox = draw.textbbox((x1, y1), label, font=font)
         draw.rectangle((x1, y1 - (text_bbox[3]-text_bbox[1]) - 5, x1 + (text_bbox[2]-text_bbox[0]) + 5, y1), fill="red")
         draw.text((x1, y1 - (text_bbox[3]-text_bbox[1]) - 5), label, fill="white", font=font)
-    final_text = " ".join(full_text_list)
+    
+    final_text = " ".join(full_text_list).strip()
+    recognized_count = sum(1 for word in full_text_list if word.strip())
+    print(f"Распознано слов: {recognized_count}/{len(sorted_boxes)}")
+    
+    if not final_text:
+        print("⚠️ Все слова найдены, но текст не распознан. Возможна проблема с моделью TrOCR.")
+    
     return finded_images, image_with_boxes, final_text
 
 if __name__ == '__main__':
