@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Распознавание рукописного текста</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📝 Распознавание рукописного текста</h1>
+            <p class="subtitle">Загрузите изображение с рукописным текстом для распознавания</p>
+        </header>
+
+        <div class="main-content">
+            <!-- Область загрузки изображения -->
+            <div class="upload-section">
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-content">
+                        <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        <p class="upload-text">Перетащите изображение сюда или <span class="upload-link">выберите файл</span></p>
+                        <p class="upload-hint">Поддерживаемые форматы: JPG, PNG, GIF, BMP, WEBP</p>
+                    </div>
+                    <input type="file" id="fileInput" accept="image/*" hidden>
+                </div>
+                
+                <div class="preview-section" id="previewSection" style="display: none;">
+                    <div class="preview-header">
+                        <h3>Загруженное изображение</h3>
+                        <button class="btn-remove" id="removeBtn">✕</button>
+                    </div>
+                    <div class="image-preview">
+                        <img id="previewImage" alt="Preview">
+                    </div>
+                    <div class="controls">
+                        <label class="conf-label">
+                            Уверенность модели:
+                            <input type="range" id="confSlider" min="0.1" max="0.9" step="0.1" value="0.4">
+                            <span id="confValue">0.4</span>
+                        </label>
+                        <button class="btn-primary" id="processBtn">
+                            <span class="btn-text">Распознать текст</span>
+                            <span class="btn-loader" id="loader" style="display: none;">⏳</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Область результатов -->
+            <div class="results-section" id="resultsSection" style="display: none;">
+                <div class="results-header">
+                    <h2>Результаты распознавания</h2>
+                    <div class="stats" id="stats"></div>
+                </div>
+                
+                <div class="results-content">
+                    <div class="result-image-container">
+                        <h3>Изображение с обнаруженными словами</h3>
+                        <div class="result-image-wrapper">
+                            <img id="resultImage" alt="Result">
+                        </div>
+                    </div>
+                    
+                    <div class="result-text-container">
+                        <div class="text-header">
+                            <h3>Распознанный текст</h3>
+                            <button class="btn-download" id="downloadBtn">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="7 10 12 15 17 10"></polyline>
+                                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                                </svg>
+                                Скачать текст
+                            </button>
+                        </div>
+                        <div class="text-output" id="textOutput"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="error-message" id="errorMessage" style="display: none;"></div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
