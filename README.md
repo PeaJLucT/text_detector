@@ -9,7 +9,7 @@
 
 1.  **Клонирование репозитория:**
     ```bash
-    git clone [https://github.com/PeaJLucT/text_detector](https://github.com/PeaJLucT/text_detector.git)
+    git clone https://github.com/PeaJLucT/text_detector.git
     ```
 
 2.  **Установка зависимостей:**
