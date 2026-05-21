@@ -1,0 +1,284 @@
+2026-05-20 17:36:02,098 - INFO - ============================================================
+2026-05-20 17:36:02,099 - INFO - НАЧАЛО ОБУЧЕНИЯ НА ДАННЫХ ЗАКАЗЧИКА
+2026-05-20 17:36:02,099 - INFO - ============================================================
+2026-05-20 17:36:02,100 - INFO - Размер обучающей выборки: 3636
+2026-05-20 17:36:02,101 - INFO - Размер валидационной выборки: 455
+2026-05-20 17:36:02,102 - INFO - Batch size: 8
+2026-05-20 17:36:02,103 - INFO - Epochs: 4
+2026-05-20 17:36:02,103 - INFO - Learning rate: 2e-06
+2026-05-20 17:36:02,104 - INFO - Device: cuda
+2026-05-20 17:42:32,644 - INFO - HTTP Request: GET https://huggingface.co/api/models/kazars24/trocr-base-handwritten-ru/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+2026-05-20 17:42:32,822 - INFO - HTTP Request: HEAD https://huggingface.co/kazars24/trocr-base-handwritten-ru/resolve/main/processor_config.json "HTTP/1.1 404 Not Found"
+2026-05-20 17:42:33,001 - INFO - HTTP Request: HEAD https://huggingface.co/kazars24/trocr-base-handwritten-ru/resolve/main/chat_template.json "HTTP/1.1 404 Not Found"
+2026-05-20 17:42:33,225 - INFO - HTTP Request: HEAD https://huggingface.co/kazars24/trocr-base-handwritten-ru/resolve/main/chat_template.jinja "HTTP/1.1 404 Not Found"
+2026-05-20 17:42:33,432 - INFO - HTTP Request: HEAD https://huggingface.co/kazars24/trocr-base-handwritten-ru/resolve/main/audio_tokenizer_config.json "HTTP/1.1 404 Not Found"
+2026-05-20 17:42:33,637 - INFO - HTTP Request: HEAD https://huggingface.co/kazars24/trocr-base-handwritten-ru/resolve/main/processor_config.json "HTTP/1.1 404 Not Found"
+2026-05-20 17:42:33,846 - INFO - HTTP Request: HEAD https://huggingface.co/kazars24/trocr-base-handwritten-ru/resolve/main/preprocessor_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-05-20 17:42:33,916 - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/kazars24/trocr-base-handwritten-ru/5342fbb29ec56eb677f553738c2fcc2befd6b0ab/preprocessor_config.json "HTTP/1.1 200 OK"
+2026-05-20 17:42:34,113 - INFO - HTTP Request: HEAD https://huggingface.co/kazars24/trocr-base-handwritten-ru/resolve/main/processor_config.json "HTTP/1.1 404 Not Found"
+2026-05-20 17:42:34,287 - INFO - HTTP Request: HEAD https://huggingface.co/kazars24/trocr-base-handwritten-ru/resolve/main/preprocessor_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-05-20 17:42:34,356 - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/kazars24/trocr-base-handwritten-ru/5342fbb29ec56eb677f553738c2fcc2befd6b0ab/preprocessor_config.json "HTTP/1.1 200 OK"
+2026-05-20 17:42:34,529 - INFO - HTTP Request: HEAD https://huggingface.co/kazars24/trocr-base-handwritten-ru/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-05-20 17:42:34,599 - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/kazars24/trocr-base-handwritten-ru/5342fbb29ec56eb677f553738c2fcc2befd6b0ab/config.json "HTTP/1.1 200 OK"
+2026-05-20 17:42:34,773 - INFO - HTTP Request: HEAD https://huggingface.co/kazars24/trocr-base-handwritten-ru/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-05-20 17:42:34,842 - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/kazars24/trocr-base-handwritten-ru/5342fbb29ec56eb677f553738c2fcc2befd6b0ab/tokenizer_config.json "HTTP/1.1 200 OK"
+2026-05-20 17:42:35,020 - INFO - HTTP Request: GET https://huggingface.co/api/models/kazars24/trocr-base-handwritten-ru/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+2026-05-20 17:42:35,199 - INFO - HTTP Request: GET https://huggingface.co/api/models/kazars24/trocr-base-handwritten-ru/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
+2026-05-20 17:42:35,707 - INFO - HTTP Request: HEAD https://huggingface.co/kazars24/trocr-base-handwritten-ru/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-05-20 17:42:35,777 - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/kazars24/trocr-base-handwritten-ru/5342fbb29ec56eb677f553738c2fcc2befd6b0ab/config.json "HTTP/1.1 200 OK"
+2026-05-20 17:42:35,954 - INFO - HTTP Request: HEAD https://huggingface.co/kazars24/trocr-base-handwritten-ru/resolve/main/model.safetensors "HTTP/1.1 302 Found"
+2026-05-20 17:42:36,303 - INFO - HTTP Request: HEAD https://huggingface.co/kazars24/trocr-base-handwritten-ru/resolve/main/generation_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-05-20 17:42:36,373 - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/kazars24/trocr-base-handwritten-ru/5342fbb29ec56eb677f553738c2fcc2befd6b0ab/generation_config.json "HTTP/1.1 200 OK"
+2026-05-20 17:42:37,134 - INFO - ============================================================
+2026-05-20 17:42:37,134 - INFO - НАЧАЛО ОБУЧЕНИЯ НА ДАННЫХ ЗАКАЗЧИКА
+2026-05-20 17:42:37,135 - INFO - ============================================================
+2026-05-20 17:42:37,135 - INFO - Размер обучающей выборки: 2409
+2026-05-20 17:42:37,136 - INFO - Размер валидационной выборки: 301
+2026-05-20 17:42:37,137 - INFO - Batch size: 8
+2026-05-20 17:42:37,138 - INFO - Epochs: 4
+2026-05-20 17:42:37,138 - INFO - Learning rate: 2e-06
+2026-05-20 17:42:37,139 - INFO - Device: cuda
+2026-05-20 17:45:37,965 - INFO - Epoch 1/4 завершена за 180.8 сек
+2026-05-20 17:45:37,966 - INFO -   Train Loss: 1.5852
+2026-05-20 17:45:37,966 - INFO -   Val Loss: 0.3837
+2026-05-20 17:45:37,967 - INFO -   Val CER: 0.3052
+2026-05-20 17:45:37,967 - INFO -   Val WER: 0.6340
+2026-05-20 17:48:39,030 - INFO - Epoch 2/4 завершена за 180.0 сек
+2026-05-20 17:48:39,030 - INFO -   Train Loss: 0.2000
+2026-05-20 17:48:39,031 - INFO -   Val Loss: 0.3338
+2026-05-20 17:48:39,031 - INFO -   Val CER: 0.2731
+2026-05-20 17:48:39,032 - INFO -   Val WER: 0.5875
+2026-05-20 17:51:40,956 - INFO - Epoch 3/4 завершена за 180.8 сек
+2026-05-20 17:51:40,957 - INFO -   Train Loss: 0.1744
+2026-05-20 17:51:40,957 - INFO -   Val Loss: 0.3192
+2026-05-20 17:51:40,958 - INFO -   Val CER: 0.2548
+2026-05-20 17:51:40,958 - INFO -   Val WER: 0.5659
+2026-05-20 17:54:42,654 - INFO - Epoch 4/4 завершена за 180.6 сек
+2026-05-20 17:54:42,655 - INFO -   Train Loss: 0.1630
+2026-05-20 17:54:42,655 - INFO -   Val Loss: 0.3148
+2026-05-20 17:54:42,656 - INFO -   Val CER: 0.2549
+2026-05-20 17:54:42,657 - INFO -   Val WER: 0.5659
+2026-05-20 17:55:27,610 - INFO - ============================================================
+2026-05-20 17:55:27,610 - INFO - ЗАГРУЗКА KAGGLE ДАТАСЕТА
+2026-05-20 17:55:27,611 - INFO - ============================================================
+2026-05-20 17:55:28,459 - INFO - Kaggle датасет загружен в: C:\Users\maill\.cache\kagglehub\datasets\constantinwerner\cyrillic-handwriting-dataset\versions\5
+2026-05-20 17:55:28,460 - INFO - Содержимое: ['test', 'test.tsv', 'train', 'train.tsv']
+2026-05-20 17:57:48,755 - INFO - Kaggle датасет загружен в: C:\Users\maill\.cache\kagglehub\datasets\constantinwerner\cyrillic-handwriting-dataset\versions\5
+2026-05-20 17:57:48,756 - INFO - Содержимое: ['test', 'test.tsv', 'train', 'train.tsv']
+2026-05-20 18:04:48,782 - INFO - Kaggle датасет загружен в: C:\Users\maill\.cache\kagglehub\datasets\constantinwerner\cyrillic-handwriting-dataset\versions\5
+2026-05-20 18:04:48,782 - INFO - Содержимое: ['test', 'test.tsv', 'train', 'train.tsv']
+2026-05-20 18:04:51,155 - INFO - Загружен train.tsv, размер: 72285
+2026-05-20 18:04:51,155 - INFO - Колонки: ['aa1.png', 'Молдова']
+2026-05-20 18:04:51,159 - INFO - Загружен test.tsv, размер: 1543
+2026-05-20 18:04:51,160 - INFO - Колонки: ['test0.png', 'ибо']
+2026-05-20 18:04:51,163 - INFO - Общий размер датасета: 73828
+2026-05-20 18:15:15,147 - INFO - ============================================================
+2026-05-20 18:15:15,149 - INFO - НАЧАЛО ДООБУЧЕНИЯ НА KAGGLE ДАТАСЕТЕ
+2026-05-20 18:15:15,150 - INFO - ============================================================
+2026-05-20 18:15:51,405 - INFO - ============================================================
+2026-05-20 18:15:51,406 - INFO - НАЧАЛО ДООБУЧЕНИЯ НА KAGGLE ДАТАСЕТЕ
+2026-05-20 18:15:51,408 - INFO - ============================================================
+2026-05-20 18:15:51,410 - INFO - Размер обучающей выборки: 120537
+2026-05-20 18:15:51,411 - INFO - Размер валидационной выборки: 15067
+2026-05-20 18:15:51,412 - INFO - Epochs: 3
+2026-05-20 18:15:51,413 - INFO - Learning rate: 1e-06
+2026-05-20 18:20:11,502 - INFO - HTTP Request: GET https://huggingface.co/api/models/kazars24/trocr-base-handwritten-ru/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+2026-05-20 18:20:11,716 - INFO - HTTP Request: HEAD https://huggingface.co/kazars24/trocr-base-handwritten-ru/resolve/main/processor_config.json "HTTP/1.1 404 Not Found"
+2026-05-20 18:20:11,903 - INFO - HTTP Request: HEAD https://huggingface.co/kazars24/trocr-base-handwritten-ru/resolve/main/chat_template.json "HTTP/1.1 404 Not Found"
+2026-05-20 18:20:12,079 - INFO - HTTP Request: HEAD https://huggingface.co/kazars24/trocr-base-handwritten-ru/resolve/main/chat_template.jinja "HTTP/1.1 404 Not Found"
+2026-05-20 18:20:12,253 - INFO - HTTP Request: HEAD https://huggingface.co/kazars24/trocr-base-handwritten-ru/resolve/main/audio_tokenizer_config.json "HTTP/1.1 404 Not Found"
+2026-05-20 18:20:12,443 - INFO - HTTP Request: HEAD https://huggingface.co/kazars24/trocr-base-handwritten-ru/resolve/main/processor_config.json "HTTP/1.1 404 Not Found"
+2026-05-20 18:20:12,618 - INFO - HTTP Request: HEAD https://huggingface.co/kazars24/trocr-base-handwritten-ru/resolve/main/preprocessor_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-05-20 18:20:12,687 - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/kazars24/trocr-base-handwritten-ru/5342fbb29ec56eb677f553738c2fcc2befd6b0ab/preprocessor_config.json "HTTP/1.1 200 OK"
+2026-05-20 18:20:12,864 - INFO - HTTP Request: HEAD https://huggingface.co/kazars24/trocr-base-handwritten-ru/resolve/main/processor_config.json "HTTP/1.1 404 Not Found"
+2026-05-20 18:20:13,036 - INFO - HTTP Request: HEAD https://huggingface.co/kazars24/trocr-base-handwritten-ru/resolve/main/preprocessor_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-05-20 18:20:13,105 - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/kazars24/trocr-base-handwritten-ru/5342fbb29ec56eb677f553738c2fcc2befd6b0ab/preprocessor_config.json "HTTP/1.1 200 OK"
+2026-05-20 18:20:13,278 - INFO - HTTP Request: HEAD https://huggingface.co/kazars24/trocr-base-handwritten-ru/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-05-20 18:20:13,347 - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/kazars24/trocr-base-handwritten-ru/5342fbb29ec56eb677f553738c2fcc2befd6b0ab/config.json "HTTP/1.1 200 OK"
+2026-05-20 18:20:13,521 - INFO - HTTP Request: HEAD https://huggingface.co/kazars24/trocr-base-handwritten-ru/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-05-20 18:20:13,590 - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/kazars24/trocr-base-handwritten-ru/5342fbb29ec56eb677f553738c2fcc2befd6b0ab/tokenizer_config.json "HTTP/1.1 200 OK"
+2026-05-20 18:20:13,766 - INFO - HTTP Request: GET https://huggingface.co/api/models/kazars24/trocr-base-handwritten-ru/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+2026-05-20 18:20:13,944 - INFO - HTTP Request: GET https://huggingface.co/api/models/kazars24/trocr-base-handwritten-ru/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
+2026-05-20 18:20:14,466 - INFO - HTTP Request: HEAD https://huggingface.co/kazars24/trocr-base-handwritten-ru/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-05-20 18:20:14,537 - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/kazars24/trocr-base-handwritten-ru/5342fbb29ec56eb677f553738c2fcc2befd6b0ab/config.json "HTTP/1.1 200 OK"
+2026-05-20 18:20:14,722 - INFO - HTTP Request: HEAD https://huggingface.co/kazars24/trocr-base-handwritten-ru/resolve/main/model.safetensors "HTTP/1.1 302 Found"
+2026-05-20 18:20:15,080 - INFO - HTTP Request: HEAD https://huggingface.co/kazars24/trocr-base-handwritten-ru/resolve/main/generation_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-05-20 18:20:15,151 - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/kazars24/trocr-base-handwritten-ru/5342fbb29ec56eb677f553738c2fcc2befd6b0ab/generation_config.json "HTTP/1.1 200 OK"
+2026-05-20 18:20:15,902 - INFO - ============================================================
+2026-05-20 18:20:15,903 - INFO - НАЧАЛО ОБУЧЕНИЯ НА ДАННЫХ ЗАКАЗЧИКА
+2026-05-20 18:20:15,903 - INFO - ============================================================
+2026-05-20 18:20:15,904 - INFO - Размер обучающей выборки: 2409
+2026-05-20 18:20:15,904 - INFO - Размер валидационной выборки: 301
+2026-05-20 18:20:15,905 - INFO - Batch size: 8
+2026-05-20 18:20:15,906 - INFO - Epochs: 4
+2026-05-20 18:20:15,907 - INFO - Learning rate: 2e-06
+2026-05-20 18:20:15,907 - INFO - Device: cuda
+2026-05-20 18:20:50,818 - INFO - ============================================================
+2026-05-20 18:20:50,819 - INFO - НАЧАЛО ОБУЧЕНИЯ НА ДАННЫХ ЗАКАЗЧИКА
+2026-05-20 18:20:50,819 - INFO - ============================================================
+2026-05-20 18:20:50,820 - INFO - Размер обучающей выборки: 2409
+2026-05-20 18:20:50,821 - INFO - Размер валидационной выборки: 301
+2026-05-20 18:20:50,822 - INFO - Batch size: 8
+2026-05-20 18:20:50,822 - INFO - Epochs: 4
+2026-05-20 18:20:50,823 - INFO - Learning rate: 2e-06
+2026-05-20 18:20:50,823 - INFO - Device: cuda
+2026-05-20 18:21:26,287 - INFO - HTTP Request: GET https://huggingface.co/api/models/kazars24/trocr-base-handwritten-ru/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+2026-05-20 18:21:26,477 - INFO - HTTP Request: HEAD https://huggingface.co/kazars24/trocr-base-handwritten-ru/resolve/main/processor_config.json "HTTP/1.1 404 Not Found"
+2026-05-20 18:21:26,655 - INFO - HTTP Request: HEAD https://huggingface.co/kazars24/trocr-base-handwritten-ru/resolve/main/chat_template.json "HTTP/1.1 404 Not Found"
+2026-05-20 18:21:26,832 - INFO - HTTP Request: HEAD https://huggingface.co/kazars24/trocr-base-handwritten-ru/resolve/main/chat_template.jinja "HTTP/1.1 404 Not Found"
+2026-05-20 18:21:27,007 - INFO - HTTP Request: HEAD https://huggingface.co/kazars24/trocr-base-handwritten-ru/resolve/main/audio_tokenizer_config.json "HTTP/1.1 404 Not Found"
+2026-05-20 18:21:27,184 - INFO - HTTP Request: HEAD https://huggingface.co/kazars24/trocr-base-handwritten-ru/resolve/main/processor_config.json "HTTP/1.1 404 Not Found"
+2026-05-20 18:21:27,362 - INFO - HTTP Request: HEAD https://huggingface.co/kazars24/trocr-base-handwritten-ru/resolve/main/preprocessor_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-05-20 18:21:27,432 - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/kazars24/trocr-base-handwritten-ru/5342fbb29ec56eb677f553738c2fcc2befd6b0ab/preprocessor_config.json "HTTP/1.1 200 OK"
+2026-05-20 18:21:27,611 - INFO - HTTP Request: HEAD https://huggingface.co/kazars24/trocr-base-handwritten-ru/resolve/main/processor_config.json "HTTP/1.1 404 Not Found"
+2026-05-20 18:21:27,786 - INFO - HTTP Request: HEAD https://huggingface.co/kazars24/trocr-base-handwritten-ru/resolve/main/preprocessor_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-05-20 18:21:27,856 - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/kazars24/trocr-base-handwritten-ru/5342fbb29ec56eb677f553738c2fcc2befd6b0ab/preprocessor_config.json "HTTP/1.1 200 OK"
+2026-05-20 18:21:28,034 - INFO - HTTP Request: HEAD https://huggingface.co/kazars24/trocr-base-handwritten-ru/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-05-20 18:21:28,104 - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/kazars24/trocr-base-handwritten-ru/5342fbb29ec56eb677f553738c2fcc2befd6b0ab/config.json "HTTP/1.1 200 OK"
+2026-05-20 18:21:28,283 - INFO - HTTP Request: HEAD https://huggingface.co/kazars24/trocr-base-handwritten-ru/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-05-20 18:21:28,353 - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/kazars24/trocr-base-handwritten-ru/5342fbb29ec56eb677f553738c2fcc2befd6b0ab/tokenizer_config.json "HTTP/1.1 200 OK"
+2026-05-20 18:21:28,531 - INFO - HTTP Request: GET https://huggingface.co/api/models/kazars24/trocr-base-handwritten-ru/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+2026-05-20 18:21:28,709 - INFO - HTTP Request: GET https://huggingface.co/api/models/kazars24/trocr-base-handwritten-ru/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
+2026-05-20 18:21:29,230 - INFO - HTTP Request: HEAD https://huggingface.co/kazars24/trocr-base-handwritten-ru/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-05-20 18:21:29,301 - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/kazars24/trocr-base-handwritten-ru/5342fbb29ec56eb677f553738c2fcc2befd6b0ab/config.json "HTTP/1.1 200 OK"
+2026-05-20 18:21:29,485 - INFO - HTTP Request: HEAD https://huggingface.co/kazars24/trocr-base-handwritten-ru/resolve/main/model.safetensors "HTTP/1.1 302 Found"
+2026-05-20 18:21:29,834 - INFO - HTTP Request: HEAD https://huggingface.co/kazars24/trocr-base-handwritten-ru/resolve/main/generation_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-05-20 18:21:29,916 - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/kazars24/trocr-base-handwritten-ru/5342fbb29ec56eb677f553738c2fcc2befd6b0ab/generation_config.json "HTTP/1.1 200 OK"
+2026-05-20 18:21:30,580 - INFO - ============================================================
+2026-05-20 18:21:30,581 - INFO - НАЧАЛО ОБУЧЕНИЯ НА ДАННЫХ ЗАКАЗЧИКА
+2026-05-20 18:21:30,581 - INFO - ============================================================
+2026-05-20 18:21:30,582 - INFO - Размер обучающей выборки: 2409
+2026-05-20 18:21:30,582 - INFO - Размер валидационной выборки: 301
+2026-05-20 18:21:30,583 - INFO - Batch size: 8
+2026-05-20 18:21:30,584 - INFO - Epochs: 4
+2026-05-20 18:21:30,585 - INFO - Learning rate: 2e-06
+2026-05-20 18:21:30,585 - INFO - Device: cuda
+2026-05-20 18:24:30,446 - INFO - Epoch 1/4 завершена за 179.8 сек
+2026-05-20 18:24:30,447 - INFO -   Train Loss: 1.5882
+2026-05-20 18:24:30,447 - INFO -   Val Loss: 0.3828
+2026-05-20 18:24:30,448 - INFO -   Val CER: 0.3006
+2026-05-20 18:24:30,448 - INFO -   Val WER: 0.6224
+2026-05-20 18:27:32,093 - INFO - Epoch 2/4 завершена за 180.4 сек
+2026-05-20 18:27:32,094 - INFO -   Train Loss: 0.1988
+2026-05-20 18:27:32,095 - INFO -   Val Loss: 0.3336
+2026-05-20 18:27:32,095 - INFO -   Val CER: 0.2642
+2026-05-20 18:27:32,096 - INFO -   Val WER: 0.5775
+2026-05-20 18:30:32,870 - INFO - Epoch 3/4 завершена за 179.6 сек
+2026-05-20 18:30:32,870 - INFO -   Train Loss: 0.1728
+2026-05-20 18:30:32,871 - INFO -   Val Loss: 0.3204
+2026-05-20 18:30:32,871 - INFO -   Val CER: 0.2644
+2026-05-20 18:30:32,873 - INFO -   Val WER: 0.5703
+2026-05-20 18:33:33,460 - INFO - Epoch 4/4 завершена за 179.4 сек
+2026-05-20 18:33:33,460 - INFO -   Train Loss: 0.1591
+2026-05-20 18:33:33,461 - INFO -   Val Loss: 0.3160
+2026-05-20 18:33:33,461 - INFO -   Val CER: 0.2614
+2026-05-20 18:33:33,462 - INFO -   Val WER: 0.5559
+2026-05-20 18:34:18,137 - INFO - ============================================================
+2026-05-20 18:34:18,138 - INFO - ЗАГРУЗКА KAGGLE ДАТАСЕТА
+2026-05-20 18:34:18,139 - INFO - ============================================================
+2026-05-20 18:34:25,351 - INFO - ============================================================
+2026-05-20 18:34:25,353 - INFO - НАЧАЛО ДООБУЧЕНИЯ НА KAGGLE ДАТАСЕТЕ
+2026-05-20 18:34:25,355 - INFO - ============================================================
+2026-05-20 18:34:25,357 - INFO - Размер обучающей выборки: 61473
+2026-05-20 18:34:25,358 - INFO - Размер валидационной выборки: 7684
+2026-05-20 18:34:25,360 - INFO - Epochs: 3
+2026-05-20 18:34:25,361 - INFO - Learning rate: 1e-06
+2026-05-20 18:38:13,919 - INFO - ============================================================
+2026-05-20 18:38:13,921 - INFO - НАЧАЛО ДООБУЧЕНИЯ НА KAGGLE ДАТАСЕТЕ
+2026-05-20 18:38:13,922 - INFO - ============================================================
+2026-05-20 18:38:13,923 - INFO - Размер обучающей выборки: 61473
+2026-05-20 18:38:13,924 - INFO - Размер валидационной выборки: 7684
+2026-05-20 18:38:13,925 - INFO - Epochs: 3
+2026-05-20 18:38:13,926 - INFO - Learning rate: 1e-06
+2026-05-20 18:43:25,713 - INFO - ============================================================
+2026-05-20 18:43:25,715 - INFO - НАЧАЛО ДООБУЧЕНИЯ НА KAGGLE ДАТАСЕТЕ
+2026-05-20 18:43:25,717 - INFO - ============================================================
+2026-05-20 18:43:25,719 - INFO - Размер обучающей выборки: 61473
+2026-05-20 18:43:25,721 - INFO - Размер валидационной выборки: 7684
+2026-05-20 18:43:25,722 - INFO - Epochs: 2
+2026-05-20 18:43:25,724 - INFO - Learning rate: 1e-06
+2026-05-20 18:45:31,387 - INFO - ============================================================
+2026-05-20 18:45:31,388 - INFO - НАЧАЛО ОБУЧЕНИЯ НА ДАННЫХ ЗАКАЗЧИКА
+2026-05-20 18:45:31,389 - INFO - ============================================================
+2026-05-20 18:45:31,390 - INFO - Размер обучающей выборки: 2409
+2026-05-20 18:45:31,391 - INFO - Размер валидационной выборки: 301
+2026-05-20 18:45:31,391 - INFO - Batch size: 8
+2026-05-20 18:45:31,392 - INFO - Epochs: 4
+2026-05-20 18:45:31,392 - INFO - Learning rate: 2e-06
+2026-05-20 18:45:31,393 - INFO - Device: cuda
+2026-05-20 18:48:30,905 - INFO - Epoch 1/4 завершена за 179.5 сек
+2026-05-20 18:48:30,906 - INFO -   Train Loss: 1.6127
+2026-05-20 18:48:30,906 - INFO -   Val Loss: 0.3812
+2026-05-20 18:48:30,907 - INFO -   Val CER: 0.3092
+2026-05-20 18:48:30,908 - INFO -   Val WER: 0.6240
+2026-05-20 18:51:31,883 - INFO - Epoch 2/4 завершена за 179.9 сек
+2026-05-20 18:51:31,884 - INFO -   Train Loss: 0.2016
+2026-05-20 18:51:31,885 - INFO -   Val Loss: 0.3348
+2026-05-20 18:51:31,885 - INFO -   Val CER: 0.2774
+2026-05-20 18:51:31,885 - INFO -   Val WER: 0.5875
+2026-05-20 18:54:32,400 - INFO - Epoch 3/4 завершена за 179.5 сек
+2026-05-20 18:54:32,400 - INFO -   Train Loss: 0.1716
+2026-05-20 18:54:32,401 - INFO -   Val Loss: 0.3195
+2026-05-20 18:54:32,402 - INFO -   Val CER: 0.2609
+2026-05-20 18:54:32,402 - INFO -   Val WER: 0.5592
+2026-05-20 18:57:32,842 - INFO - Epoch 4/4 завершена за 179.1 сек
+2026-05-20 18:57:32,843 - INFO -   Train Loss: 0.1623
+2026-05-20 18:57:32,844 - INFO -   Val Loss: 0.3155
+2026-05-20 18:57:32,845 - INFO -   Val CER: 0.2663
+2026-05-20 18:57:32,845 - INFO -   Val WER: 0.5626
+2026-05-20 18:58:16,987 - INFO - ============================================================
+2026-05-20 18:58:16,988 - INFO - ЗАГРУЗКА KAGGLE ДАТАСЕТА
+2026-05-20 18:58:16,988 - INFO - ============================================================
+2026-05-20 18:58:24,111 - INFO - ============================================================
+2026-05-20 18:58:24,112 - INFO - НАЧАЛО ДООБУЧЕНИЯ НА KAGGLE ДАТАСЕТЕ
+2026-05-20 18:58:24,114 - INFO - ============================================================
+2026-05-20 18:58:24,115 - INFO - Размер обучающей выборки: 61473
+2026-05-20 18:58:24,116 - INFO - Размер валидационной выборки: 7684
+2026-05-20 18:58:24,118 - INFO - Epochs: 2
+2026-05-20 18:58:24,118 - INFO - Learning rate: 0.001
+2026-05-20 19:04:01,639 - INFO - ============================================================
+2026-05-20 19:04:01,641 - INFO - НАЧАЛО ДООБУЧЕНИЯ НА KAGGLE ДАТАСЕТЕ
+2026-05-20 19:04:01,642 - INFO - ============================================================
+2026-05-20 19:04:01,643 - INFO - Размер обучающей выборки: 179601
+2026-05-20 19:04:01,644 - INFO - Размер валидационной выборки: 22450
+2026-05-20 19:04:01,645 - INFO - Epochs: 1
+2026-05-20 19:04:01,646 - INFO - Learning rate: 0.001
+2026-05-20 19:14:09,890 - INFO - ============================================================
+2026-05-20 19:14:09,891 - INFO - НАЧАЛО ОБУЧЕНИЯ НА ДАННЫХ ЗАКАЗЧИКА
+2026-05-20 19:14:09,891 - INFO - ============================================================
+2026-05-20 19:14:09,892 - INFO - Размер обучающей выборки: 2409
+2026-05-20 19:14:09,893 - INFO - Размер валидационной выборки: 301
+2026-05-20 19:14:09,894 - INFO - Batch size: 8
+2026-05-20 19:14:09,894 - INFO - Epochs: 4
+2026-05-20 19:14:09,895 - INFO - Learning rate: 2e-06
+2026-05-20 19:14:09,895 - INFO - Device: cuda
+2026-05-20 19:17:09,148 - INFO - Epoch 1/4 завершена за 179.2 сек
+2026-05-20 19:17:09,148 - INFO -   Train Loss: 1.5911
+2026-05-20 19:17:09,149 - INFO -   Val Loss: 0.3807
+2026-05-20 19:17:09,150 - INFO -   Val CER: 0.2965
+2026-05-20 19:17:09,150 - INFO -   Val WER: 0.6041
+2026-05-20 19:20:10,760 - INFO - Epoch 2/4 завершена за 180.5 сек
+2026-05-20 19:20:10,760 - INFO -   Train Loss: 0.2018
+2026-05-20 19:20:10,761 - INFO -   Val Loss: 0.3329
+2026-05-20 19:20:10,761 - INFO -   Val CER: 0.2626
+2026-05-20 19:20:10,762 - INFO -   Val WER: 0.5753
+2026-05-20 19:23:11,769 - INFO - Epoch 3/4 завершена за 179.5 сек
+2026-05-20 19:23:11,769 - INFO -   Train Loss: 0.1709
+2026-05-20 19:23:11,770 - INFO -   Val Loss: 0.3182
+2026-05-20 19:23:11,771 - INFO -   Val CER: 0.2515
+2026-05-20 19:23:11,771 - INFO -   Val WER: 0.5559
+2026-05-20 19:26:15,273 - INFO - Epoch 4/4 завершена за 182.3 сек
+2026-05-20 19:26:15,274 - INFO -   Train Loss: 0.1626
+2026-05-20 19:26:15,274 - INFO -   Val Loss: 0.3143
+2026-05-20 19:26:15,275 - INFO -   Val CER: 0.2506
+2026-05-20 19:26:15,275 - INFO -   Val WER: 0.5460
+2026-05-20 19:27:00,745 - INFO - ============================================================
+2026-05-20 19:27:00,746 - INFO - ЗАГРУЗКА KAGGLE ДАТАСЕТА
+2026-05-20 19:27:00,747 - INFO - ============================================================
+2026-05-20 19:27:07,617 - INFO - ============================================================
+2026-05-20 19:27:07,618 - INFO - НАЧАЛО ДООБУЧЕНИЯ НА KAGGLE ДАТАСЕТЕ
+2026-05-20 19:27:07,620 - INFO - ============================================================
+2026-05-20 19:27:07,621 - INFO - Размер обучающей выборки: 60238
+2026-05-20 19:27:07,622 - INFO - Размер валидационной выборки: 7530
+2026-05-20 19:27:07,624 - INFO - Epochs: 1
+2026-05-20 19:27:07,625 - INFO - Learning rate: 0.001
