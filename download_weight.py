@@ -1,7 +1,10 @@
 import os
 import gdown
 
-def download_weights():
+def download_weights() -> None:
+    # узнать актуальную ссылку лучших весов сегментирующей модели
+    # на момент использования приложения
+    # или установить веса сразу без привязки к диску
     file_id = '1woLCmXIQG18JBHPXusvELASPMDM49pCM' 
     output_folder = 'weights'
     output_file = 'best.pt'
@@ -19,4 +22,5 @@ def download_weights():
     print("\nВеса скачаны.")
 
 if __name__ == "__main__":
-    download_weights()
+    download_weights() 
+
