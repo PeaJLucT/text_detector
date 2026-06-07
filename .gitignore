@@ -6,3 +6,7 @@ coverage/
 *.log
 .env*
 !.env.example
+__pycache__/*
+museum's  photo examples/*
+older website/*
+website project/*

@@ -1,65 +1,77 @@
-from PIL import Image, ImageDraw, ImageOps, ImageFont, ImageEnhance
-import PIL
 import os
-from ultralytics import YOLO
-import numpy as np
 import cv2
+import torch
+import numpy as np
+import PIL
+from PIL import Image, ImageDraw, ImageOps, ImageFont
+from ultralytics import YOLO
+from transformers import TrOCRProcessor, VisionEncoderDecoderModel
+import re
+from functions import detect
+
+# НАСТРОЙКИ МОДЕЛЕЙ 
+YOLO_MODEL_PATH = './segmentation best weight/best_1.pt'  # Путь к YOLO модели 1
+YOLO_MODEL_PATH_2 = './segmentation best weight/best_4.pt'  # Путь к YOLO модели 2
+
+TROCR_MODEL_NAME = "cyrillic-trocr/trocr-handwritten-cyrillic" # Путь к TrOCR 
+# TROCR_MODEL_NAME = "kaz-v/trocr-handwritten-russian"         
+DEVICE = "cuda:0" if torch.cuda.is_available() else "cpu"
+# Папки
+example_images = 'text_detector/examples'        # Где хранятся изображения для чтения
+images_output = 'final_results'                  # Куда сохранять картинки с текстом
+words_output_dir = ''                            # Куда сохранять нарезанные слова/оставить '' если не требуется
+text_file_output = 'full_text1.txt'              # Куда сохранить весь текст
 
 
-def sort_boxes(boxes):
+
+def load_models():
     """
-    Сортирует рамки в порядке чтения: сверху-вниз, слева-направо
+    Загружает обе модели yolo и trOcr в память один раз при старте 
     """
-    if not boxes:
-        return []
-    # определяем среднюю высоту рамок, чтобы задать допуск для одной строки
-    boxes_data = boxes.data.cpu().numpy() 
-    heights = boxes_data[:, 3] - boxes_data[:, 1]
-    avg_height = np.mean(heights)
-    # print(f'Средний допуск строки - {avg_height}')
-    
-    # Сортируем рамки по строкам
-    sorted_boxes = sorted(boxes, key=lambda b: (b.xyxy[0][1].item() // (avg_height * 0.7), b.xyxy[0][0].item()))
-    
-    return sorted_boxes
+    print(f"Загрузка моделей на {DEVICE}")
 
-def pre_process_image_for_model(pil_image):
-    '''
-    Использует умное улучшение контраста (CLAHE), чтобы вытащить карандаш,
-    не ломая при этом ручку.
-    '''
-    img_np = np.array(pil_image.convert('RGB'))
-    gray = cv2.cvtColor(img_np, cv2.COLOR_RGB2GRAY)
-    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
-    enhanced_gray = clahe.apply(gray)
-
-    # gamma = 0.8
-    # enhanced_gray = np.array(255 * (enhanced_gray / 255) ** (1 / gamma), dtype='uint8')
-
-    enhanced_rgb = cv2.cvtColor(enhanced_gray, cv2.COLOR_GRAY2RGB)
-    return Image.fromarray(enhanced_rgb)
-
-
-def detect(model_path: str, image_path: str, draw_graphs = False, conf = 0.3, output_folder = '') -> tuple[list[PIL.Image.Image], PIL.Image.Image]:
-    '''
-    Возвращает список обнаруженных и вырезанных слов с изображения
-
-    Args:
-        model_path (str): Путь до лучшей модели
-        image_path (str): Путь до изображения *.jpg | *.png
-        draw_graphs (bool): True - если нужно вывести в output изображение оригинальное и с маской найденных слов
-        conf (float): Уверенность модели для записи маски как правильной
-        output_folder (str): Путь до папки, в которую будут сохранены все вырезанные найденные слова с изображения
-    Returns:
-        list: [ [Список найденных изображений] , оригинальное изображение с маской детекции]
-    '''
-    
     try:
-        model = YOLO(model_path, task='detect')
-        print(f"Лучшая модель успешно загружена из {model_path}")
+        yolo_model = YOLO(YOLO_MODEL_PATH, task='detect')
+        print(f"✅ Первая YOLO модель загружена из {YOLO_MODEL_PATH}")
+        yolo_model.to(DEVICE) 
     except Exception as e:
-        print(f"Ошибка при загрузке модели: {e}")
-        return [], None
+        print(f"❌ Ошибка загрузки первой YOLO модели: {e}")
+        raise
+    try:
+        yolo_model_2 = YOLO(YOLO_MODEL_PATH_2, task='detect')
+        print(f"✅ Вторая YOLO модель загружена из {YOLO_MODEL_PATH_2}")
+        yolo_model_2.to(DEVICE)
+    except Exception as e:
+        print(f"❌ Ошибка загрузки второй YOLO модели: {e}")
+        raise
+    
+
+    # TrOCR
+    try:
+        print("Загрузка TrOCR модели с HuggingFace (может занять время при первом запуске)...")
+        processor = TrOCRProcessor.from_pretrained(TROCR_MODEL_NAME)
+        trocr_model = VisionEncoderDecoderModel.from_pretrained(TROCR_MODEL_NAME)
+        trocr_model.to(DEVICE)
+        trocr_model.eval()
+        print("✅ TrOCR модель загружена")
+    except Exception as e:
+        print(f"❌ Ошибка загрузки TrOCR модели: {e}")
+        print("Проверьте интернет-соединение. Модель загружается с HuggingFace.")
+        raise
+    
+    print("Модели успешно загружены")
+    return yolo_model, yolo_model_2,  processor, trocr_model
+
+def detect_and_read(yolo_model, yolo_model_2, processor, trocr_model, image_path, conf=0.3, output_folder=''):
+    '''
+    Находит слова и читает их
+    
+    :param yolo_model: Модель YOLOv8
+    :param yolo_model_2: Модель YOLOv8
+    :param image_path: Путь до изображения для чтения текста на нем
+    :param conf: Уверенность модели 
+    :param output_folder: 
+    '''
 
     try:
         orig_img = Image.open(image_path).convert('RGB')
@@ -67,91 +79,117 @@ def detect(model_path: str, image_path: str, draw_graphs = False, conf = 0.3, ou
         print(f'Изображение успешно загружено из {image_path}')
     except Exception as e:
         print(f"Ошибка при открытии изображения: {e}")
-        return [], None
-    
-    # Детектим слова
-    img_gray_for_model = ImageOps.grayscale(orig_img).convert('RGB')
-    
-    # img_gray_for_model = pre_process_image_for_model(orig_img)
-    results = model.predict(img_gray_for_model, imgsz=1280, conf=conf, verbose=False)
-    result = results[0]
+        return [], None, ''
 
-    sorted_boxes = sort_boxes(result.boxes)
-    
-    image_with_boxes = orig_img.copy()
+    finded_images, image_with_boxes, count_words, sorted_boxes = detect(
+        model_path = yolo_model,
+        model_path_2= yolo_model_2, 
+        conf = conf, 
+        threshold_value=0.9,
+        image_path= image_path,
+        output_folder=words_output_dir
+        )
     draw = ImageDraw.Draw(image_with_boxes)
-
-    try:    
-        font = ImageFont.truetype("arial.ttf", 40)
+    try:
+        font = ImageFont.truetype("arial.ttf", 40)  
     except IOError:
         font = ImageFont.load_default()
 
-    # список найденных слов 
-    finded_images = list()
+    if count_words == 0:
+        print("⚠️ YOLO не нашел слов на изображении. Попробуйте уменьшить параметр уверенности.")
+        return [], orig_img, ""
+
+    full_text_list = []
 
     image_name = os.path.splitext(os.path.basename(image_path))[0]
-    
-
     if output_folder:
         current_img_output = os.path.join(output_folder, image_name)
-        #папка для сохранения изображений слов
         os.makedirs(current_img_output, exist_ok=True)
+    
+    detected_data = list()
 
+    # РАСПОЗНАВАНИЕ TrOCR
+    print(f"Начинаю распознавание {count_words} слов...")
     for i, box in enumerate(sorted_boxes):
-        c = box.xyxy[0].cpu().numpy().astype(int) # x1, y1, x2, y2
+        c = box.xyxy[0].tolist()
         x1, y1, x2, y2 = c[0], c[1], c[2], c[3]
 
-        confid = float(box.conf[0])
+        padding = 5              
+        width, height = orig_img.size
+        x1_p = max(0, x1 - padding)
+        y1_p = max(0, y1 - padding)
+        x2_p = min(width, x2 + padding)
+        y2_p = min(height, y2 + padding)
+        crop_image = orig_img.crop((x1_p, y1_p, x2_p, y2_p))
         
-        # Вырезаем слово
-        crop_image = orig_img.crop((x1, y1, x2, y2))
-        if output_folder:
-            crop_image.save(os.path.join(current_img_output, f'{i}.jpg'), quality = 100)
-        finded_images.append(crop_image)
+        processed_crop = crop_image
+        pixel_values = processor(processed_crop, return_tensors="pt").pixel_values.to(DEVICE)
+        
+        with torch.no_grad():
+            generated_ids = trocr_model.generate(
+                pixel_values,
+                max_length=50,    # Длина для слова
+                num_beams=6,      # Качество поиска
+                early_stopping=True
+            )
+        
+        word_text = processor.batch_decode(generated_ids, skip_special_tokens=True)[0]
+        word_text = re.sub(r'[^а-яА-ЯёЁ0-9\.,\-\!\? ]', '', word_text)  # №№№№№№№№№№
+        
+        detected_data.append({'text':word_text, 'box':[x1, y1, x2, y2]})
+        
+        full_text_list.append(word_text)
+        
+        if (i + 1) % 10 == 0:
+            print(f"  Обработано {i + 1}/{len(finded_images)} слов...")
 
-        draw.rectangle([x1, y1, x2, y2], outline="red", width=5)
 
-        label = f"{confid:.2f}"
+        draw.rectangle([x1, y1, x2, y2], outline="red", width=4)
+        if word_text.strip():
+            label = word_text
+        else:
+            label = "???"
+            
         text_bbox = draw.textbbox((x1, y1), label, font=font)
-        draw.rectangle((x1, y1 - (text_bbox[3]-text_bbox[1]), x1 + (text_bbox[2]-text_bbox[0]), y1), fill="red")
-        draw.text((x1, y1 - (text_bbox[3]-text_bbox[1])), label, fill="white", font=font)
-
-
-    print(f"Найдено {len(result.boxes)} объектов с уверенностью > {conf}.")
-
-    # page_with_boxes = result.plot()
-    if draw_graphs:
-        import matplotlib.pyplot as plt
-        fig, axs = plt.subplots(1, 2, figsize=(20, 7))
-
-        axs[0].imshow(orig_img)
-        axs[0].set_title('Исходное изображение')
-        axs[0].axis('off')
-        
-        axs[1].imshow(image_with_boxes)
-        axs[1].set_title('Результат YOLO 1')
-        axs[1].axis('off')
-
-        plt.tight_layout()
-        plt.show()
+        draw.rectangle((x1, y1 - (text_bbox[3]-text_bbox[1]) - 5, x1 + (text_bbox[2]-text_bbox[0]) + 5, y1), fill="red")
+        draw.text((x1, y1 - (text_bbox[3]-text_bbox[1]) - 5), label, fill="white", font=font)
     
-    return finded_images, image_with_boxes
-
+    final_text = " ".join(full_text_list).strip()
+    recognized_count = sum(1 for word in full_text_list if word.strip())
+    print(f"Распознано слов: {recognized_count}/{len(sorted_boxes)}")
+    
+    if not final_text:
+        print("⚠️ Все слова найдены, но текст не распознан. Возможна проблема с моделью TrOCR.")
+    
+    return finded_images, image_with_boxes, final_text, detected_data
 
 if __name__ == '__main__':
-    # путь до модели
-    best_model_path = 'weights/last.pt'
-    
-    # путь до изображений, которые нужно сегментировать на слова
-    example_images = 'examples'
-    # Путь до папки куда будут сохраняться изображения с рамками
-    images_output = 'detect outputs/run10_1280px_augmented4'
-    # Папка в которые будут сохраняться изображения слов
-    words_output_dir = ''
+    yolo, yolo_2, processor, trocr = load_models()
+    os.makedirs(images_output, exist_ok=True)
 
-    for image in os.listdir(example_images):
-        image_path = os.path.join(example_images, image)
-        image_w_boxes = detect(best_model_path, image_path, draw_graphs=False,output_folder=words_output_dir)[1]
+    open(text_file_output, 'w', encoding='utf-8').close()
 
-        os.makedirs(images_output, exist_ok=True)
-        image_w_boxes.save(os.path.join(images_output, f'{image}'), 'png')
+    for image_file in os.listdir(example_images):  
+        image_path = os.path.join(example_images, image_file)
+        
+        print(f"\nОбработка: {image_file}")
+        
+        _, img_result, text_result, detected_data = detect_and_read(
+            yolo, yolo_2, processor, trocr, 
+            image_path, 
+            conf=0.4, # Порог уверенности для YOLO
+            output_folder=words_output_dir
+        )
+        
+        # Сохраняем картинку с подписанными найденными словами
+        if img_result:
+            save_path = os.path.join(images_output, f'recognized_{image_file}')
+            img_result.save(save_path)
+            print(f"Картинка сохранена: {save_path}")
+        
+        # Сохраняем текст в файл
+        if text_result:
+            print(f"Текст:\n{text_result[:100]}...") 
+            with open(text_file_output, 'a', encoding='utf-8') as f:
+                f.write(f"=== {image_file} ===\n")
+                f.write(text_result + "\n\n")
