@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-/my_venv
-=======
 node_modules/
 build/
 dist/
@@ -13,4 +10,3 @@ __pycache__/*
 museum's  photo examples/*
 older website/*
 website project/*
->>>>>>> 3cbc1f0025c6eac7ba29559acfc0962e7261a4e4
