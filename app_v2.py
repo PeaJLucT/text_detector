@@ -8,6 +8,8 @@ from PIL import Image
 import tempfile
 from text_detector import load_models, detect_and_read
 
+TROCR_MODEL_PATH = "./text_recognition_model/model"
+
 app = Flask(__name__)
 CORS(app)
 
@@ -58,7 +60,7 @@ def upload_file():
         with Image.open(temp_path) as img:
             img_width, img_height = img.size
         # Получаем параметр уверенности из запроса (если есть)
-        conf = float(request.form.get('conf', 0.4))
+        conf = float(request.form.get('conf', 0.5))
         
         # Обрабатываем изображение
         print(f"Обработка изображения: {filename}, уверенность: {conf}")
@@ -156,23 +158,32 @@ if __name__ == '__main__':
         print("\nПапка 'segmentation best weight' уже создана.")
         print("=" * 60)
         exit(1)
+
+    if not os.path.isdir(TROCR_MODEL_PATH) or not os.path.exists(
+        os.path.join(TROCR_MODEL_PATH, "config.json")
+    ):
+        print("=" * 60)
+        print("⚠️  ВНИМАНИЕ: Модель распознавания слов не найдена!")
+        print("=" * 60)
+        print(f"Ожидаемый путь: {os.path.abspath(TROCR_MODEL_PATH)}")
+        print("Нужны файлы: config.json, model.safetensors, tokenizer.json")
+        print("=" * 60)
+        exit(1)
     
     # Загружаем модели только один раз (не при перезагрузке в debug режиме)
     if yolo_model is None or yolo_model_2 is None:
         print("Загрузка моделей...")
         try:
-            yolo_model, yolo_model_2, processor, trocr_model = load_models()
+            yolo_model, yolo_model_2, processor, trocr_model = load_models(
+                trocr_model_path=TROCR_MODEL_PATH,
+            )
             print("✅ Модели загружены успешно!")
         except Exception as e:
             print(f"❌ Ошибка при загрузке моделей: {e}")
             print("\nВозможные причины:")
-            print("  - Проблема с интернет-соединением (TrOCR загружается с HuggingFace)")
-            print("  - Модель YOLO не найдена: segmentation best weight/best.pt")
-            print("  - Проблемы с доступом к HuggingFace")
-            print("\nПопробуйте:")
-            print("  1. Проверить интернет-соединение")
-            print("  2. Убедиться, что модель YOLO находится в segmentation best weight/best.pt")
-            print("  3. Запустить снова (модель TrOCR может быть уже в кэше)")
+            print("  - Не найдена папка text_recognition_model/model")
+            print("  - Отсутствуют config.json или model.safetensors")
+            print("  - Модель YOLO не найдена в segmentation best weight/")
             exit(1)
     
     print("Запуск веб-сервера...")

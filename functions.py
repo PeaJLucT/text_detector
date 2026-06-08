@@ -155,7 +155,7 @@ def merge_two_model_detections(boxes1, boxes2, priority=1, iou_thresh=0.8):
     # Объединяем приоритетные боксы и оставшиеся второстепенные
     return primary_boxes + keep_secondary
 
-def detect(model_path: str, image_path: str, draw_graphs = False, conf = 0.3, output_folder = '', threshold_value= 0.9, model_path_2 = None) -> tuple[list[PIL.Image.Image], PIL.Image.Image, int, [YOLO().result.boxes.xyxy[0]]]:
+def detect(model_path: str, image_path: str, draw_graphs = False, conf = 0.3, output_folder = '', threshold_value= 0.9, model_path_2 = None) -> tuple[list[PIL.Image.Image], PIL.Image.Image | None, int, list]:
     '''
     Возвращает список обнаруженных и вырезанных слов с изображения
 

@@ -13,8 +13,8 @@ from functions import detect
 YOLO_MODEL_PATH = './segmentation best weight/best_1.pt'  # Путь к YOLO модели 1
 YOLO_MODEL_PATH_2 = './segmentation best weight/best_4.pt'  # Путь к YOLO модели 2
 
-TROCR_MODEL_NAME = "cyrillic-trocr/trocr-handwritten-cyrillic" # Путь к TrOCR 
-# TROCR_MODEL_NAME = "kaz-v/trocr-handwritten-russian"         
+TROCR_MODEL_PATH = "./text_recognition_model/model"
+TROCR_BATCH_SIZE = 16
 DEVICE = "cuda:0" if torch.cuda.is_available() else "cpu"
 # Папки
 example_images = 'text_detector/examples'        # Где хранятся изображения для чтения
@@ -23,8 +23,30 @@ words_output_dir = ''                            # Куда сохранять �
 text_file_output = 'full_text1.txt'              # Куда сохранить весь текст
 
 
+def preprocess_word_crop(crop: Image.Image) -> Image.Image:
+    """Удаляет горизонтальные линии и повышает контраст перед TrOCR."""
+    gray = cv2.cvtColor(np.array(crop.convert("RGB")), cv2.COLOR_RGB2GRAY)
 
-def load_models():
+    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(4, 4))
+    gray = clahe.apply(gray)
+
+    h, w = gray.shape
+    if w >= 12 and h >= 6:
+        k_w = max(15, int(w * 0.6))
+        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (k_w, 1))
+        lines = cv2.morphologyEx(gray, cv2.MORPH_OPEN, kernel)
+
+        _, mask = cv2.threshold(lines, 15, 255, cv2.THRESH_BINARY)
+        if cv2.countNonZero(mask) > 0:
+            gray = cv2.inpaint(gray, mask, inpaintRadius=2, flags=cv2.INPAINT_TELEA)
+
+    gray = clahe.apply(gray)
+    gray = cv2.normalize(gray, None, 0, 255, cv2.NORM_MINMAX)
+
+    return Image.fromarray(cv2.cvtColor(gray, cv2.COLOR_GRAY2RGB))
+
+
+def load_models(trocr_model_path=TROCR_MODEL_PATH):
     """
     Загружает обе модели yolo и trOcr в память один раз при старте 
     """
@@ -48,15 +70,28 @@ def load_models():
 
     # TrOCR
     try:
-        print("Загрузка TrOCR модели с HuggingFace (может занять время при первом запуске)...")
-        processor = TrOCRProcessor.from_pretrained(TROCR_MODEL_NAME)
-        trocr_model = VisionEncoderDecoderModel.from_pretrained(TROCR_MODEL_NAME)
+        config_path = os.path.join(trocr_model_path, "config.json")
+        weights_path = os.path.join(trocr_model_path, "model.safetensors")
+        if not os.path.isdir(trocr_model_path) or not os.path.exists(config_path):
+            raise FileNotFoundError(
+                f"Папка модели TrOCR не найдена: {os.path.abspath(trocr_model_path)}"
+            )
+        if not os.path.exists(weights_path):
+            raise FileNotFoundError(
+                f"Файл весов TrOCR не найден: {os.path.abspath(weights_path)}"
+            )
+
+        print(f"Загрузка TrOCR из {os.path.abspath(trocr_model_path)}")
+        processor = TrOCRProcessor.from_pretrained(trocr_model_path, local_files_only=True)
+        trocr_model = VisionEncoderDecoderModel.from_pretrained(
+            trocr_model_path, local_files_only=True
+        )
         trocr_model.to(DEVICE)
         trocr_model.eval()
         print("✅ TrOCR модель загружена")
     except Exception as e:
         print(f"❌ Ошибка загрузки TrOCR модели: {e}")
-        print("Проверьте интернет-соединение. Модель загружается с HuggingFace.")
+        print("Проверьте папку text_recognition_model/model (config.json, model.safetensors, tokenizer).")
         raise
     
     print("Модели успешно загружены")
@@ -99,60 +134,59 @@ def detect_and_read(yolo_model, yolo_model_2, processor, trocr_model, image_path
         print("⚠️ YOLO не нашел слов на изображении. Попробуйте уменьшить параметр уверенности.")
         return [], orig_img, ""
 
-    full_text_list = []
-
-    image_name = os.path.splitext(os.path.basename(image_path))[0]
-    if output_folder:
-        current_img_output = os.path.join(output_folder, image_name)
-        os.makedirs(current_img_output, exist_ok=True)
-    
     detected_data = list()
 
-    # РАСПОЗНАВАНИЕ TrOCR
-    print(f"Начинаю распознавание {count_words} слов...")
-    for i, box in enumerate(sorted_boxes):
-        c = box.xyxy[0].tolist()
-        x1, y1, x2, y2 = c[0], c[1], c[2], c[3]
+    # РАСПОЗНАВАНИЕ TrOCR (пакетами)
+    print(f"Начинаю распознавание {count_words} слов (batch={TROCR_BATCH_SIZE})...")
+    padding = 5
+    width, height = orig_img.size
+    crops = []
+    boxes_coords = []
 
-        padding = 5              
-        width, height = orig_img.size
+    for box in sorted_boxes:
+        x1, y1, x2, y2 = box.xyxy[0].tolist()
         x1_p = max(0, x1 - padding)
         y1_p = max(0, y1 - padding)
         x2_p = min(width, x2 + padding)
         y2_p = min(height, y2 + padding)
-        crop_image = orig_img.crop((x1_p, y1_p, x2_p, y2_p))
-        
-        processed_crop = crop_image
-        pixel_values = processor(processed_crop, return_tensors="pt").pixel_values.to(DEVICE)
-        
+        crops.append(preprocess_word_crop(orig_img.crop((x1_p, y1_p, x2_p, y2_p))))
+        boxes_coords.append([x1, y1, x2, y2])
+
+    word_texts = []
+    for batch_start in range(0, len(crops), TROCR_BATCH_SIZE):
+        batch_crops = crops[batch_start:batch_start + TROCR_BATCH_SIZE]
+        pixel_values = processor(batch_crops, return_tensors="pt").pixel_values.to(DEVICE)
+
         with torch.no_grad():
             generated_ids = trocr_model.generate(
                 pixel_values,
-                max_length=50,    # Длина для слова
-                num_beams=6,      # Качество поиска
-                early_stopping=True
+                max_length=50,
+                num_beams=6,
+                early_stopping=True,
             )
-        
-        word_text = processor.batch_decode(generated_ids, skip_special_tokens=True)[0]
-        word_text = re.sub(r'[^а-яА-ЯёЁ0-9\.,\-\!\? ]', '', word_text)  # №№№№№№№№№№
-        
-        detected_data.append({'text':word_text, 'box':[x1, y1, x2, y2]})
-        
-        full_text_list.append(word_text)
-        
-        if (i + 1) % 10 == 0:
-            print(f"  Обработано {i + 1}/{len(finded_images)} слов...")
 
+        batch_texts = processor.batch_decode(generated_ids, skip_special_tokens=True)
+        word_texts.extend(
+            re.sub(r'[^а-яА-ЯёЁ0-9\.,\-\!\? ]', '', text)
+            for text in batch_texts
+        )
+
+        processed = min(batch_start + len(batch_crops), len(crops))
+        print(f"  Обработано {processed}/{len(crops)} слов...")
+
+    full_text_list = []
+    for word_text, (x1, y1, x2, y2) in zip(word_texts, boxes_coords):
+        detected_data.append({'text': word_text, 'box': [x1, y1, x2, y2]})
+        full_text_list.append(word_text)
 
         draw.rectangle([x1, y1, x2, y2], outline="red", width=4)
-        if word_text.strip():
-            label = word_text
-        else:
-            label = "???"
-            
+        label = word_text if word_text.strip() else "???"
         text_bbox = draw.textbbox((x1, y1), label, font=font)
-        draw.rectangle((x1, y1 - (text_bbox[3]-text_bbox[1]) - 5, x1 + (text_bbox[2]-text_bbox[0]) + 5, y1), fill="red")
-        draw.text((x1, y1 - (text_bbox[3]-text_bbox[1]) - 5), label, fill="white", font=font)
+        draw.rectangle(
+            (x1, y1 - (text_bbox[3] - text_bbox[1]) - 5, x1 + (text_bbox[2] - text_bbox[0]) + 5, y1),
+            fill="red",
+        )
+        draw.text((x1, y1 - (text_bbox[3] - text_bbox[1]) - 5), label, fill="white", font=font)
     
     final_text = " ".join(full_text_list).strip()
     recognized_count = sum(1 for word in full_text_list if word.strip())

@@ -1,0 +1,9 @@
+torch
+torchvision
+ultralytics
+numpy
+opencv-python
+transformers
+pillow
+flask
+flask-cors
