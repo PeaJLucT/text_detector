@@ -11,7 +11,7 @@ from functions import detect
 
 # НАСТРОЙКИ МОДЕЛЕЙ 
 YOLO_MODEL_PATH = './segmentation best weight/best_1.pt'  # Путь к YOLO модели 1
-YOLO_MODEL_PATH_2 = './segmentation best weight/best_4.pt'  # Путь к YOLO модели 2
+YOLO_MODEL_PATH_2 = ''  # Путь к YOLO модели 2
 
 TROCR_MODEL_PATH = "./text_recognition_model/model"
 TROCR_BATCH_SIZE = 8
@@ -64,8 +64,8 @@ def load_models(trocr_model_path=TROCR_MODEL_PATH):
         print(f"✅ Вторая YOLO модель загружена из {YOLO_MODEL_PATH_2}")
         yolo_model_2.to(DEVICE)
     except Exception as e:
+        yolo_model_2 = None
         print(f"❌ Ошибка загрузки второй YOLO модели: {e}")
-        raise
     
 
     # TrOCR
@@ -116,14 +116,23 @@ def detect_and_read(yolo_model, yolo_model_2, processor, trocr_model, image_path
         print(f"Ошибка при открытии изображения: {e}")
         return [], None, ''
 
-    finded_images, image_with_boxes, count_words, sorted_boxes = detect(
-        model_path = yolo_model,
-        model_path_2= yolo_model_2, 
-        conf = conf, 
-        threshold_value=0.9,
-        image_path= image_path,
-        output_folder=words_output_dir
-        )
+    if yolo_model_2 is not None:
+        finded_images, image_with_boxes, count_words, sorted_boxes = detect(
+            model_path = yolo_model,
+            model_path_2= yolo_model_2, 
+            conf = conf, 
+            threshold_value=0.9,
+            image_path= image_path,
+            output_folder=words_output_dir
+            )
+    else:
+        finded_images, image_with_boxes, count_words, sorted_boxes = detect(
+            model_path = yolo_model, 
+            conf = conf, 
+            threshold_value=0.9,
+            image_path= image_path,
+            output_folder=words_output_dir
+            )
     # draw = ImageDraw.Draw(image_with_boxes)
     # try:
     #     font = ImageFont.truetype("arial.ttf", 40)
