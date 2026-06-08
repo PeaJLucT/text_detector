@@ -175,7 +175,6 @@ text_recognition_model/
 | `segmentation best weight/` | Веса YOLO (`best_1.pt`) |
 | `dist/` | Собранный React-интерфейс |
 | `requirements.txt` | Python-зависимости |
-| `download_weight.py` | Загрузка весов YOLO в `weights/` (устаревший путь; для приложения нужна папка `segmentation best weight/`) |
 
 ---
 
@@ -200,9 +199,6 @@ images_output = 'final_results'
 words_output_dir = ''
 ```
 
-### `download_weight.py`
-
-Скачивает веса в `weights/best.pt` через Google Drive. Для веб-приложения используйте веса в `segmentation best weight/`.
 
 
 
