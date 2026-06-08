@@ -75,14 +75,13 @@ cd dist && python -m http.server 3000
 
 ### YOLO (детекция слов)
 
-Две модели в папке `segmentation best weight/`:
+Модель в папке `segmentation best weight/`:
 
 | Файл | Назначение |
 | :--- | :--- |
 | `best_1.pt` | Основная модель детекции |
-| `best_4.pt` | Вторая модель (объединение результатов) |
 
-Без этих файлов `app_v2.py` завершится с ошибкой при старте.
+Без этого файла `app_v2.py` завершится с ошибкой при старте.
 
 ### TrOCR (распознавание текста)
 
@@ -173,11 +172,10 @@ text_recognition_model/
 | `text_detector.py` | Детекция (YOLO) + распознавание (TrOCR), пакетный inference |
 | `functions.py` | Детекция YOLO, слияние двух моделей, сортировка боксов |
 | `text_recognition_model/model/` | Локальные веса TrOCR |
-| `segmentation best weight/` | Веса YOLO (`best_1.pt`, `best_4.pt`) |
+| `segmentation best weight/` | Веса YOLO (`best_1.pt`) |
 | `dist/` | Собранный React-интерфейс |
 | `requirements.txt` | Python-зависимости |
 | `download_weight.py` | Загрузка весов YOLO в `weights/` (устаревший путь; для приложения нужна папка `segmentation best weight/`) |
-| `readme/` | Иллюстрации для документации |
 
 ---
 
@@ -206,31 +204,5 @@ words_output_dir = ''
 
 Скачивает веса в `weights/best.pt` через Google Drive. Для веб-приложения используйте веса в `segmentation best weight/`.
 
----
 
-## Датасеты для обучения YOLOv8
 
-Для обучения моделей детекции использовались два открытых набора с тетрадными записями на русском языке.
-
-### 1. AI Forever School Notebooks (HuggingFace)
-
-* **Ссылка:** [HuggingFace Dataset](https://huggingface.co/datasets/ai-forever/school_notebooks_RU)
-* **Размер:** 2.8 Gb
-* **Состав:** 1557 train / 150 val
-* **Особенности:** разметка для детекции (bbox) и сегментации (polygons)
-
-<div align="center">
-<img src="readme/0_1.jpg" width="640" alt="School_train_example">
-<p><em>Пример изображения из первого датасета</em></p>
-</div>
-
-### 2. Russian Handwritten Text (Roboflow)
-
-* **Ссылка:** [Roboflow Universe](https://universe.roboflow.com/max-kuznetsov/russian-handwritten-text/dataset/3)
-* **Размер:** 0.7 Gb
-* **Состав:** 2325 train / 170 val
-
-<div align="center">
-<img src="readme/0_2.jpg" height="400" alt="Russian_train_example">
-<p><em>Пример изображения из второго датасета</em></p>
-</div>
