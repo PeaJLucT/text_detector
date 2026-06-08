@@ -17,14 +17,24 @@ if not exist "venv" (
     echo [1/5] Виртуальное окружение найдено.
 )
 
-echo [2/5] Активируем окружение и устанавливаем библиотеки...
+echo [2/5] Активируем окружение и проверяем библиотеки...
 call venv\Scripts\activate
 
-echo Установка PyTorch с поддержкой CUDA...
-pip install torch torchvision --index-url https://download.pytorch.org/whl/cu126
+pip show torch >nul 2>&1
+if errorlevel 1 (
+    echo Установка PyTorch с поддержкой CUDA...
+    pip install torch torchvision --index-url https://download.pytorch.org/whl/cu126
+) else (
+    echo PyTorch уже установлен, пропускаем.
+)
 
-echo Установка остальных зависимостей...
-pip install -r requirements.txt
+pip show flask >nul 2>&1
+if errorlevel 1 (
+    echo Установка остальных зависимостей...
+    pip install ultralytics numpy opencv-python transformers pillow flask flask-cors
+) else (
+    echo Остальные зависимости уже установлены.
+)
 
 :: Проверка модели TrOCR (не входит в репозиторий)
 if not exist "text_recognition_model\model\config.json" (

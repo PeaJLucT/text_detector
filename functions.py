@@ -218,14 +218,14 @@ def detect(model_path: str, image_path: str, draw_graphs = False, conf = 0.3, ou
 
 
     image_with_boxes = orig_img.copy()
-    draw = ImageDraw.Draw(image_with_boxes)
+    # draw = ImageDraw.Draw(image_with_boxes)
+    #
+    # try:
+    #     font = ImageFont.truetype("arial.ttf", 40)
+    # except IOError:
+    #     font = ImageFont.load_default()
 
-    try:    
-        font = ImageFont.truetype("arial.ttf", 40)
-    except IOError:
-        font = ImageFont.load_default()
-
-    # список найденных слов 
+    # список найденных слов
     finded_images = list()
 
     image_name = os.path.splitext(os.path.basename(image_path))[0]
@@ -247,12 +247,12 @@ def detect(model_path: str, image_path: str, draw_graphs = False, conf = 0.3, ou
             crop_image.save(os.path.join(current_img_output, f'{i}.jpg'), quality = 100)
         finded_images.append(crop_image)
 
-        draw.rectangle([x1, y1, x2, y2], outline="red", width=5)
-
-        label = f"{confid:.2f}"
-        text_bbox = draw.textbbox((x1, y1), label, font=font)
-        draw.rectangle((x1, y1 - (text_bbox[3]-text_bbox[1]), x1 + (text_bbox[2]-text_bbox[0]), y1), fill="red")
-        draw.text((x1, y1 - (text_bbox[3]-text_bbox[1])), label, fill="white", font=font)
+        # draw.rectangle([x1, y1, x2, y2], outline="red", width=5)
+        #
+        # label = f"{confid:.2f}"
+        # text_bbox = draw.textbbox((x1, y1), label, font=font)
+        # draw.rectangle((x1, y1 - (text_bbox[3]-text_bbox[1]), x1 + (text_bbox[2]-text_bbox[0]), y1), fill="red")
+        # draw.text((x1, y1 - (text_bbox[3]-text_bbox[1])), label, fill="white", font=font)
 
 
     print(f"Найдено {len(sorted_boxes)} объектов с уверенностью > {conf}.")

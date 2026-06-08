@@ -14,7 +14,7 @@ YOLO_MODEL_PATH = './segmentation best weight/best_1.pt'  # Путь к YOLO м�
 YOLO_MODEL_PATH_2 = './segmentation best weight/best_4.pt'  # Путь к YOLO модели 2
 
 TROCR_MODEL_PATH = "./text_recognition_model/model"
-TROCR_BATCH_SIZE = 16
+TROCR_BATCH_SIZE = 8
 DEVICE = "cuda:0" if torch.cuda.is_available() else "cpu"
 # Папки
 example_images = 'text_detector/examples'        # Где хранятся изображения для чтения
@@ -124,11 +124,11 @@ def detect_and_read(yolo_model, yolo_model_2, processor, trocr_model, image_path
         image_path= image_path,
         output_folder=words_output_dir
         )
-    draw = ImageDraw.Draw(image_with_boxes)
-    try:
-        font = ImageFont.truetype("arial.ttf", 40)  
-    except IOError:
-        font = ImageFont.load_default()
+    # draw = ImageDraw.Draw(image_with_boxes)
+    # try:
+    #     font = ImageFont.truetype("arial.ttf", 40)
+    # except IOError:
+    #     font = ImageFont.load_default()
 
     if count_words == 0:
         print("⚠️ YOLO не нашел слов на изображении. Попробуйте уменьшить параметр уверенности.")
@@ -179,14 +179,14 @@ def detect_and_read(yolo_model, yolo_model_2, processor, trocr_model, image_path
         detected_data.append({'text': word_text, 'box': [x1, y1, x2, y2]})
         full_text_list.append(word_text)
 
-        draw.rectangle([x1, y1, x2, y2], outline="red", width=4)
-        label = word_text if word_text.strip() else "???"
-        text_bbox = draw.textbbox((x1, y1), label, font=font)
-        draw.rectangle(
-            (x1, y1 - (text_bbox[3] - text_bbox[1]) - 5, x1 + (text_bbox[2] - text_bbox[0]) + 5, y1),
-            fill="red",
-        )
-        draw.text((x1, y1 - (text_bbox[3] - text_bbox[1]) - 5), label, fill="white", font=font)
+        # draw.rectangle([x1, y1, x2, y2], outline="red", width=4)
+        # label = word_text if word_text.strip() else "???"
+        # text_bbox = draw.textbbox((x1, y1), label, font=font)
+        # draw.rectangle(
+        #     (x1, y1 - (text_bbox[3] - text_bbox[1]) - 5, x1 + (text_bbox[2] - text_bbox[0]) + 5, y1),
+        #     fill="red",
+        # )
+        # draw.text((x1, y1 - (text_bbox[3] - text_bbox[1]) - 5), label, fill="white", font=font)
     
     final_text = " ".join(full_text_list).strip()
     recognized_count = sum(1 for word in full_text_list if word.strip())
@@ -195,7 +195,7 @@ def detect_and_read(yolo_model, yolo_model_2, processor, trocr_model, image_path
     if not final_text:
         print("⚠️ Все слова найдены, но текст не распознан. Возможна проблема с моделью TrOCR.")
     
-    return finded_images, image_with_boxes, final_text, detected_data
+    return finded_images, orig_img, final_text, detected_data
 
 if __name__ == '__main__':
     yolo, yolo_2, processor, trocr = load_models()
