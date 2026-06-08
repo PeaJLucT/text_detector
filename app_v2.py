@@ -145,8 +145,8 @@ def download_text():
 if __name__ == '__main__':
     # Проверка наличия модели YOLO
     yolo_model_path = './segmentation best weight/best_1.pt'
-    yolo_model_path_2 = './segmentation best weight/best_4.pt'
-    if not os.path.exists(yolo_model_path) or not os.path.exists(yolo_model_path_2):
+    yolo_model_path_2 = ''
+    if not os.path.exists(yolo_model_path):
         print("=" * 60)
         print("⚠️  ВНИМАНИЕ: Модель YOLO не найдена!")
         print("=" * 60)
@@ -171,7 +171,7 @@ if __name__ == '__main__':
         exit(1)
     
     # Загружаем модели только один раз (не при перезагрузке в debug режиме)
-    if yolo_model is None or yolo_model_2 is None:
+    if yolo_model is None:
         print("Загрузка моделей...")
         try:
             yolo_model, yolo_model_2, processor, trocr_model = load_models(
